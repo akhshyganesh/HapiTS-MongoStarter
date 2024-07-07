@@ -1,6 +1,3 @@
-Sure! Here's a README content in markdown format for your repository "HapiTS-MongoStarter":
-
-```markdown
 # HapiTS-MongoStarter
 
 Welcome to **HapiTS-MongoStarter**! This repository provides a starting template for building applications with Hapi, TypeScript, and MongoDB.
@@ -23,12 +20,14 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/your-username/HapiTS-MongoStarter.git
    cd HapiTS-MongoStarter
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
@@ -36,6 +35,7 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 3. **Set up environment variables:**
 
    Create a `.env` file in the root directory and add your MongoDB connection string:
+
    ```env
    MONGODB_URI=mongodb://localhost:27017/your-database-name
    ```
@@ -43,6 +43,7 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 ### Running the Application
 
 1. **Start the development server:**
+
    ```bash
    npm run dev
    ```
@@ -52,6 +53,7 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 ### Building for Production
 
 1. **Build the project:**
+
    ```bash
    npm run build
    ```
@@ -95,6 +97,8 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
 ```
 
 Feel free to modify this content to better suit your specific needs and project details.
+```
