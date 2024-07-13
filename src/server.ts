@@ -8,6 +8,7 @@ import routes from '@/routes';
 import validateAuthToken from '@/middleware/validateAuthToken';
 import logIpAddress from '@/middleware/logIpAddress';
 //plugin
+import responseFormatter from '@/plugin/responseFormatter.plugin';
 
 const server: Hapi.Server = Hapi.server({
   port: config.port,
@@ -19,9 +20,9 @@ const start = async () => {
 
   server.ext('onRequest', logIpAddress);
   server.ext('onRequest', validateAuthToken);
-
   server.route(routes);
 
+  await server.register(responseFormatter);
   await server.start();
   console.log('Server running on %s', server.info.uri);
 };

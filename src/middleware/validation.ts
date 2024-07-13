@@ -1,5 +1,5 @@
 import { Request, ResponseToolkit, ResponseObject } from '@hapi/hapi';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 
 export const validatePayload = (schema: Joi.ObjectSchema) => {
   return {
