@@ -1,10 +1,13 @@
 import { ServerRoute } from '@hapi/hapi';
 import UserController from '@/controller/user.controller';
+import { validatePayload } from '@/middleware/validation';
+import { userSchema } from '@/validation/userSchema';
 
 const userRoutes: ServerRoute[] = [
   {
     method: 'POST',
     path: '/users',
+    options: validatePayload(userSchema),
     handler: UserController.createUser,
   },
   {
@@ -20,6 +23,7 @@ const userRoutes: ServerRoute[] = [
   {
     method: 'PUT',
     path: '/users/{id}',
+    options: validatePayload(userSchema),
     handler: UserController.updateUser,
   },
   {

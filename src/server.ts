@@ -1,7 +1,13 @@
 import * as Hapi from '@hapi/hapi';
-import connectDB from '@/config/db';
-import routes from '@/routes';
+// config
 import config from '@/config';
+import connectDB from '@/config/db';
+//routes
+import routes from '@/routes';
+// middleware
+import validateAuthToken from '@/middleware/validateAuthToken';
+import logIpAddress from '@/middleware/logIpAddress';
+//plugin
 
 const server: Hapi.Server = Hapi.server({
   port: config.port,
@@ -10,6 +16,9 @@ const server: Hapi.Server = Hapi.server({
 
 const start = async () => {
   await connectDB();
+
+  server.ext('onRequest', logIpAddress);
+  server.ext('onRequest', validateAuthToken);
 
   server.route(routes);
 
