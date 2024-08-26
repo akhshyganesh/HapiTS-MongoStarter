@@ -13,6 +13,11 @@ import responseFormatter from '@/plugin/responseFormatter.plugin';
 const server: Hapi.Server = Hapi.server({
   port: config.port,
   host: 'localhost',
+  routes: {
+    cors: {
+      origin: ['http://localhost:3000'], // Allows requests only from http://localhost:3000
+    },
+  },
 });
 
 const start = async () => {
