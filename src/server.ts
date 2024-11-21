@@ -8,14 +8,17 @@ import routes from '@/routes';
 import validateAuthToken from '@/middleware/validateAuthToken';
 import logIpAddress from '@/middleware/logIpAddress';
 //plugin
-import responseFormatter from '@/plugin/responseFormatter.plugin';
+import { responseFormatter } from '@/plugin/responseFormatter.plugin';
 
 const server: Hapi.Server = Hapi.server({
   port: config.port,
   host: config.host,
   routes: {
     cors: {
-      origin: ['http://localhost:3000'], // Allows requests only from http://localhost:3000
+      origin: ['*'], // add your frontend url
+      headers: ['Authorization', 'Accept', 'Content-Type'],
+      exposedHeaders: ['Authorization', 'Accept', 'Content-Type'],
+      credentials: true,
     },
   },
 });

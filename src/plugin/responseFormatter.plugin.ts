@@ -25,28 +25,43 @@ const formatError = (error: any, message: string): ErrorResponse => ({
   message,
 });
 
-const responseFormatter: Hapi.Plugin<undefined> = {
+export const responseFormatter: Hapi.Plugin<undefined> = {
   name: 'responseFormatterPlugin',
   register: async function (server: Hapi.Server) {
     server.ext('onPreResponse', (request, h) => {
-      const response = request.response;
+      const response = request.response as Hapi.ResponseObject;
+
+      let headers: any = {};
+      if (response && response.headers) {
+        headers = response.headers;
+      }
 
       if (Boom.isBoom(response)) {
         // Handle Boom errors
         const boomError = response as Boom.Boom;
         const { statusCode, payload } = boomError.output;
-        return h
+        let responseToolkit: any = h
           .response(formatError(payload, boomError.message))
           .code(statusCode);
+
+        Object.entries(headers).forEach(([key, value]) => {
+          responseToolkit.header(key, value);
+        });
+
+        return responseToolkit;
       } else {
         // Format success responses
         const regularResponse = response as Hapi.ResponseObject;
-        return h
+        let responseToolkit: any = h
           .response(formatResponse(regularResponse.source))
           .code(regularResponse.statusCode);
+
+        Object.entries(headers).forEach(([key, value]) => {
+          responseToolkit.header(key, value);
+        });
+
+        return responseToolkit;
       }
     });
   },
 };
-
-export default responseFormatter;
