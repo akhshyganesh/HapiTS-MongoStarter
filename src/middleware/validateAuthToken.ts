@@ -1,3 +1,4 @@
+import Boom from '@hapi/boom';
 import { Request, ResponseToolkit } from '@hapi/hapi';
 
 const validateAuthToken = (request: Request, h: ResponseToolkit) => {
@@ -7,9 +8,10 @@ const validateAuthToken = (request: Request, h: ResponseToolkit) => {
 
   const authToken = request.headers['authorization'];
   if (!authToken) {
-    return h.response({ error: 'Missing auth token' }).code(401).takeover();
+    throw Boom.unauthorized('Missing auth token');
   }
-  // TODO: Add logics to validate authToken
+
+  // TODO: Add logic to validate authToken
   return h.continue;
 };
 

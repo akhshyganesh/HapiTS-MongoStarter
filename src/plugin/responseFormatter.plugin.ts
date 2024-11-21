@@ -1,4 +1,5 @@
 import Hapi from '@hapi/hapi';
+import { ResponseObject } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 
 interface SuccessResponse<T> {
@@ -29,39 +30,35 @@ export const responseFormatter: Hapi.Plugin<undefined> = {
   name: 'responseFormatterPlugin',
   register: async function (server: Hapi.Server) {
     server.ext('onPreResponse', (request, h) => {
-      const response = request.response as Hapi.ResponseObject;
-
-      let headers: any = {};
-      if (response && response.headers) {
-        headers = response.headers;
-      }
+      const response = request.response;
 
       if (Boom.isBoom(response)) {
-        // Handle Boom errors
-        const boomError = response as Boom.Boom;
-        const { statusCode, payload } = boomError.output;
-        let responseToolkit: any = h
-          .response(formatError(payload, boomError.message))
-          .code(statusCode);
-
-        Object.entries(headers).forEach(([key, value]) => {
-          responseToolkit.header(key, value);
-        });
-
-        return responseToolkit;
-      } else {
-        // Format success responses
-        const regularResponse = response as Hapi.ResponseObject;
-        let responseToolkit: any = h
-          .response(formatResponse(regularResponse.source))
-          .code(regularResponse.statusCode);
-
-        Object.entries(headers).forEach(([key, value]) => {
-          responseToolkit.header(key, value);
-        });
-
-        return responseToolkit;
+        // Standardize Boom errors
+        const { statusCode, payload } = response.output;
+        return h
+          .response(formatError(payload, response.message))
+          .code(statusCode)
+          .takeover();
       }
+
+      if (
+        response instanceof Object &&
+        (response as ResponseObject).source !== undefined
+      ) {
+        const responseObject = response as ResponseObject;
+        const source = responseObject.source;
+
+        if (source && typeof source === 'object' && 'isOk' in source) {
+          return h.continue; // Already formatted, continue
+        }
+
+        return h
+          .response(formatResponse(source))
+          .code(responseObject.statusCode)
+          .takeover();
+      }
+
+      return h.continue;
     });
   },
 };
