@@ -14,7 +14,7 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (version 14 or later)
+- [Node.js](https://nodejs.org/) (version 18 or later)
 - [MongoDB](https://www.mongodb.com/) (you can use a local instance or a cloud service like MongoDB Atlas)
 
 ### Installation
@@ -22,7 +22,7 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/HapiTS-MongoStarter.git
+   git clone https://github.com/akhshyganesh/HapiTS-MongoStarter.git
    cd HapiTS-MongoStarter
    ```
 
@@ -76,7 +76,7 @@ Follow these steps to get up and running with the HapiTS-MongoStarter template.
 │   ├── server.ts
 │   └── ...
 ├── .env
-├── .eslintrc.js
+├── .eslint.config.js
 ├── .gitignore
 ├── package.json
 ├── tsconfig.json
@@ -99,6 +99,6 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ```
-
 Feel free to modify this content to better suit your specific needs and project details.
+Please do not forget to include this project license
 ```
