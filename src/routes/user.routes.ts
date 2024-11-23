@@ -1,5 +1,5 @@
 import { ServerRoute } from '@hapi/hapi';
-import UserController from '@/controller/user.controller';
+import UserController from '@/controllers/user.controller';
 import { validatePayload } from '@/middleware/validation';
 import { userSchema } from '@/validation/userSchema';
 
