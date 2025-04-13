@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 font-semibold text-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 focus:ring-primary-400;
+  }
+  
+  .btn-danger {
+    @apply bg-danger-500 hover:bg-danger-700 focus:ring-danger-400;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-500 hover:bg-gray-600 focus:ring-gray-400;
+  }
+  
+  .form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500;
+  }
+  
+  .form-label {
+    @apply block mb-1 text-sm font-medium text-gray-700;
+  }
+  
+  .card {
+    @apply p-6 bg-white border rounded-lg shadow-md;
+  }
+  
+  .table-container {
+    @apply overflow-x-auto rounded-lg shadow;
+  }
+  
+  .data-table {
+    @apply min-w-full divide-y divide-gray-200;
+  }
+  
+  .data-table thead {
+    @apply bg-gray-50;
+  }
+  
+  .data-table th {
+    @apply px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase;
+  }
+  
+  .data-table tbody {
+    @apply bg-white divide-y divide-gray-200;
+  }
+  
+  .data-table td {
+    @apply px-6 py-4 whitespace-nowrap;
+  }
+}
