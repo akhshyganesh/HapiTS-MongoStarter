@@ -1,65 +1,96 @@
+import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi';
 import Boom from '@hapi/boom';
-import { Request, ResponseToolkit } from '@hapi/hapi';
-import UserService from '@/services/user.service';
-import { IUser } from '@/models/user.model';
+import { UserService } from '@/services/user.service';
+import ResponseFormatter from '@/utils/response/formatter';
+import { createUserSchema, updateUserSchema } from '@/schemas/user.schema';
+import { DUPLICATE_ENTRY_CODE } from '@/constant';
 
-class UserController {
-  async createUser(request: Request, h: ResponseToolkit) {
-    try {
-      const user = await UserService.createUser(request.payload as IUser);
-      return h.response(user).code(201);
-    } catch (error: any) {
-      return Boom.badRequest(error.message);
-    }
+export class UserController {
+  private readonly userService: UserService;
+
+  constructor() {
+    this.userService = new UserService();
   }
 
-  async getUsers(request: Request, h: ResponseToolkit) {
+  public createUser = async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
     try {
-      const users = await UserService.getUsers();
-      return h.response(users).code(200);
-    } catch (error: any) {
-      return Boom.badRequest(error.message);
-    }
-  }
+      const userData = await createUserSchema.validateAsync(request.payload);
+      const user = await this.userService.createUser(userData);
 
-  async getUserById(request: Request, h: ResponseToolkit) {
-    try {
-      const user = await UserService.getUserById(request.params.id);
-      if (!user) {
-        return Boom.notFound('User not found');
+      return h.response(ResponseFormatter.success(user)).code(201);
+    } catch (error: IAny) {
+      if (error.code === DUPLICATE_ENTRY_CODE) {
+        throw Boom.conflict('Email already in use');
       }
-      return h.response(user).code(200);
-    } catch (error: any) {
-      return Boom.badRequest(error.message);
-    }
-  }
-
-  async updateUser(request: Request, h: ResponseToolkit) {
-    try {
-      const user = await UserService.updateUser(
-        request.params.id,
-        request.payload as Partial<IUser>,
-      );
-      if (!user) {
-        return Boom.notFound('User not found');
+      if (error.isJoi) {
+        throw Boom.badRequest(error.message);
       }
-      return h.response(user).code(200);
-    } catch (error: any) {
-      return Boom.badRequest(error.message);
+      throw Boom.badImplementation('Failed to create user');
     }
-  }
+  };
 
-  async deleteUser(request: Request, h: ResponseToolkit) {
+  public getUsers = async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
     try {
-      const user = await UserService.deleteUser(request.params.id);
-      if (!user) {
-        return Boom.notFound('User not found');
-      }
-      return h.response('User deleted successfully').code(200);
-    } catch (error: any) {
-      return Boom.badRequest(error.message);
+      const users = await this.userService.getUsers();
+      return h.response(ResponseFormatter.success(users));
+    } catch (error: IAny) {
+      throw Boom.badImplementation('Failed to retrieve users');
     }
-  }
+  };
+
+  public getUserById = async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
+    try {
+      const { id } = request.params;
+      const user = await this.userService.getUserById(id);
+
+      if (!user) {
+        throw Boom.notFound('User not found');
+      }
+
+      return h.response(ResponseFormatter.success(user));
+    } catch (error: IAny) {
+      if (Boom.isBoom(error)) {
+        throw error;
+      }
+      throw Boom.badImplementation('Failed to retrieve user');
+    }
+  };
+
+  public updateUser = async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
+    try {
+      const { id } = request.params;
+      const updateData = await updateUserSchema.validateAsync(request.payload);
+
+      const updatedUser = await this.userService.updateUser(id, updateData);
+
+      if (!updatedUser) {
+        throw Boom.notFound('User not found');
+      }
+
+      return h.response(ResponseFormatter.success(updatedUser));
+    } catch (error: IAny) {
+      if (Boom.isBoom(error)) {
+        throw error;
+      }
+      throw Boom.badImplementation('Failed to update user');
+    }
+  };
+
+  public deleteUser = async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
+    try {
+      const { id } = request.params;
+      const result = await this.userService.deleteUser(id);
+
+      if (!result) {
+        throw Boom.notFound('User not found');
+      }
+
+      return h.response(ResponseFormatter.success({ message: 'User deleted successfully' }));
+    } catch (error: IAny) {
+      if (Boom.isBoom(error)) {
+        throw error;
+      }
+      throw Boom.badImplementation('Failed to delete user');
+    }
+  };
 }
-
-export default new UserController();

@@ -1,0 +1,1 @@
+export const DUPLICATE_ENTRY_CODE = 11000;
